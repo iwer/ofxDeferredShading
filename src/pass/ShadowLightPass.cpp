@@ -33,7 +33,7 @@ ShadowLightPass::ShadowLightPass(const glm::vec2& size) : RenderPass(size, Rende
 	group.add(pos.set("source_position", glm::vec3(100., -200., 100.), glm::vec3(-2048.), glm::vec3(2048.)));
 	group.add(center.set("source_look", glm::vec3(0., 0., 0.), glm::vec3(-1024.), glm::vec3(1024.)));
 	// load shader
-	shader.load(passThruPath, shaderPath + "shadow/shadowLight.frag");
+    shader.load(passThruPath, shaderPath + "shadow/ShadowLight.frag");
 	linearDepthShader.load(shaderPath + "gbuffer.vert", shaderPath + "shadow/LinearDetph.frag");
 
 }
