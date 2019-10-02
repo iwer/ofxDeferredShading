@@ -16,8 +16,8 @@ namespace ofxDeferred {
 			s.height = res.y;
 			s.numColorbuffers = 1;
 			s.numSamples = 1;
-			s.maxFilter = GL_LINEAR;
-			s.minFilter = GL_LINEAR;
+			s.maxFilter = GL_NEAREST;
+			s.minFilter = GL_NEAREST;
 			s.useDepth = false;
 			s.useStencil = false;
 			s.internalformat = intrenalFormat;
