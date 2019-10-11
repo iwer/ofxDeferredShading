@@ -2,7 +2,6 @@
 precision highp float;
 
 uniform sampler2DRect tex;
-uniform sampler2DRect colorTex;
 uniform sampler2DRect lightDepthTex;
 uniform sampler2DRect positionTex;
 uniform sampler2DRect normalAndDepthTex;
@@ -17,12 +16,13 @@ uniform float darkness;
 uniform float lds;
 uniform float near;
 uniform int isLighting;
+uniform float biasScalar;
 
 in vec2 vTexCoord;
 out vec4 outputColor;
 
 float sampleShadow(in vec2 uv, float compare) {
-    return step(texture(lightDepthTex, uv).r - near * lds, compare);
+    return smoothstep(texture(lightDepthTex, uv).r - near * lds, compare, compare + 0.02);
 }
 
 float sampleShadowLinear(in vec2 uv, float compare) {
@@ -57,11 +57,6 @@ float sampleShadowPCF(in vec2 uv, float compare) {
 void main() {
 
     vec4 read = texture(tex, vTexCoord);
-    float stencil = texture(colorTex, vTexCoord).a;
-    if (stencil < 0.001) {
-        outputColor = read;
-        return;
-    }
     vec4 position = texture(positionTex, vTexCoord); // in view space
     vec3 normal = texture(normalAndDepthTex, vTexCoord).rgb; // in view space
 
@@ -71,8 +66,8 @@ void main() {
     vec2 res = textureSize(lightDepthTex);
 
     float cosThete = clamp(dot(lightDir, normal), 0., 1.);
-    float bias = 0.005 * tan(acos(cosThete));
-    bias = clamp(bias, 0., 0.005);
+    float bias = biasScalar * tan(acos(cosThete));
+    bias = clamp(bias, 0., biasScalar);
 
     float sm = sampleShadowPCF(shadowCoord.xy * res, dist - bias);
 
